@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, datetime
 import json
 import config
 import requests
@@ -111,7 +111,7 @@ class AllOptionsForJapan:
     all_flight_plans: list[BestFlights]
 
     def search_and_set_best_flights(self):
-        max_concurrent = 1
+        max_concurrent = 2
         # Create a ThreadPoolExecutor for concurrent execution
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=max_concurrent
@@ -185,6 +185,10 @@ def all_flight_options(
     ]
 
 
+def curDateTimeStr() -> str:
+    return datetime.now().strftime("%Y%m%d_%H%M")
+
+
 def main():
     socal_ports = ["LAX"]
     norcal_ports = ["SFO"]
@@ -207,10 +211,10 @@ def main():
     )
 
     best_socal_flights.search_and_set_best_flights()
-    best_socal_flights.to_csv("socal_flights.csv")
+    best_socal_flights.to_csv(f"socal_flights_{curDateTimeStr()}.csv")
 
     best_norcal_flights.search_and_set_best_flights()
-    best_norcal_flights.to_csv("norcal_flights.csv")
+    best_norcal_flights.to_csv(f"norcal_flights_{curDateTimeStr()}.csv")
 
 
 if __name__ == "__main__":
